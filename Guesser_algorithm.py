@@ -20,7 +20,7 @@ def add_points(freq, fft_controll, points, moving):
     for i in range(len(freq)):
         if 0 < fft_controll[i]:  # looking at amplitudes of the spikes higher than 0
             if freq[i] <= 0: continue
-            n = round(48 * math.log(freq[i] / 110, 2)) + 110  # round to musical tone
+            n = 440 * 2 ** (round(48 * math.log(freq[i] / 440, 2)) / 48)  # round to musical tone
             points.append([moving / check_rate, n, fft_controll[i]])
 
 
@@ -94,9 +94,9 @@ def plot(points):
 
 
 if __name__ == '__main__':
-    path = '110hz.wav'
-    length_of_fft = 60  # seconds of the song
+    path = 'yona.wav'
+    length_of_fft = 10  # seconds of the song
     check_rate = 10  # 1/check_rate samples in a second
-    spike = 15 # how much percent of low amplitude points to kick
-    alpha = 100  # norm change, the more high the less accurate the next time window will have to be
+    spike = 40 # how much percent of low amplitude points to kick
+    alpha = 0  # norm change, the more high the less accurate the next time window will have to be
     plot(filter(fft(path)))
