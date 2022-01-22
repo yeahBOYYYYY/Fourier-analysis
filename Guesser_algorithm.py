@@ -26,7 +26,7 @@ def add_points(freq, fft_controll, points, moving):
 
 def fft(path):
     """ computes the frequency and amplitude """
-    sampFreq, sound = wavfile.read(path) # sampFreq = 44.1 kHz
+    sampFreq, sound = wavfile.read(path)  # sampFreq = 44.1 kHz
     sound = sound / 2.0 ** 15  # normalize the frequency
     signal = sound[:, 0] # only right ear
     signal = signal[:length_of_fft * sampFreq:]
@@ -94,7 +94,7 @@ def plot(points):
 
 
 if __name__ == '__main__':
-    path = 'yona.wav'
+    path = 'SoundFiles/yona.wav'
     length_of_fft = 10  # seconds of the song
     check_rate = 10  # 1/check_rate samples in a second
     spike = 40 # how much percent of low amplitude points to kick
