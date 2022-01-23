@@ -1,4 +1,3 @@
-import math
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.io import wavfile
@@ -8,20 +7,19 @@ import matplotlib.colors as colors
 
 def reduced_signal(f, g):
     """ computes the difference between f and g """
-    return lambda x: f[x] - g[x]
+    return f - g
 
 
-def norm(f, domain):
+def norm(f):
     """ computes the norm (times 100 for convenience) of a function """
-    return 100*math.sqrt(sum([f(z)**2 for z in range(domain)]))
+    return 100 * np.sqrt(np.sum(f ** 2))
 
 
 def add_points(freq, fft_controll, points, moving):
+    freq = 440 * 2 ** (np.round(np.log(freq / 440) * 48) / 48)  # round to musical tone
     for i in range(len(freq)):
         if 0 < fft_controll[i]:  # looking at amplitudes of the spikes higher than 0
-            if freq[i] <= 0: continue
-            n = 440 * 2 ** (round(48 * math.log(freq[i] / 440, 2)) / 48)  # round to musical tone
-            points.append([moving / check_rate, n, fft_controll[i]])
+            points.append([moving / check_rate, freq[i], fft_controll[i]])
 
 
 def fft(path):
@@ -44,7 +42,7 @@ def fft(path):
         win = np.array(signal[window * moving:window * (moving + 1):])
         r_i = reduced_signal(win, win_controll)
         # check if the reduced function is good enough
-        _norm = norm(r_i, len(win))
+        _norm = norm(r_i)
         if _norm <= alpha:
             print("norm is: ", str(round(_norm, 2)) + "; good enough!")
             add_points(freq, fft_controll, points, moving)
@@ -94,9 +92,10 @@ def plot(points):
 
 
 if __name__ == '__main__':
-    path = 'SoundFiles/yona.wav'
-    length_of_fft = 10  # seconds of the song
+    path = 'SoundFiles/110hz.wav'
+    length_of_fft = 60  # seconds of the song
     check_rate = 10  # 1/check_rate samples in a second
-    spike = 40 # how much percent of low amplitude points to kick
-    alpha = 0  # norm change, the more high the less accurate the next time window will have to be
+    spike = 5 # how much percent of low amplitude points to kick
+    alpha = 100  # norm change, the more high the less accurate the next time window will have to be
+
     plot(filter(fft(path)))
